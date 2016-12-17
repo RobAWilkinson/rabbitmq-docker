@@ -30,7 +30,7 @@ services:
     volumes:
       - .:/usr/src/app
     ## set your startup file here
-    command: bash -c "sleep 5; node app.js"
+    command: bash -c "sleep 5; npm run start-dev"
     links:
       - rabbitmq
     depends_on: 
