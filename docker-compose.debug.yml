@@ -1,0 +1,41 @@
+
+version: '2'
+
+services:
+  receiver:
+    image: receiver:latest
+    build: 
+      context: ./receiver
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+      - AMPQ_ADDRESS=amqp://rabbitmq:5672
+    volumes: 
+      - ./receiver:/usr/src/app
+    command: bash -c "sleep 5; node app.js"
+    links:
+      - rabbitmq
+    depends_on: 
+      - "rabbitmq"
+  gameswithwords:
+    image: gameswithwords:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=development
+      - AMPQ_ADDRESS=amqp://rabbitmq:5672
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    ## set your startup file here
+    command: bash -c "sleep 5; node app.js"
+    links:
+      - rabbitmq
+    depends_on: 
+      - "rabbitmq"
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672
